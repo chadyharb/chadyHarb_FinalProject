@@ -5,6 +5,8 @@
  */
 
 package newpackage;
+import java.sql.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -12,11 +14,32 @@ package newpackage;
  */
 public class NewJFrame extends javax.swing.JFrame {
 
+    public Connection con;
     /**
      * Creates new form NewJFrame
      */
     public NewJFrame() {
         initComponents();
+        this.setTitle("LCU Courses");
+        this.setLocationRelativeTo(this);
+        tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
+        tblCourses.getColumnModel().getColumn(0).setMaxWidth(0);
+        getConnection();
+    }
+    
+    private void getConnection(){
+        try {
+            String JDBC_DRIVER="com.mysql.jdbc.driver";
+            String DB_URL="jdbc:mysql://localhost:3306/courses";
+            String USERNAME="root";
+            String PASSWORD="mysql";
+            Class.forName(JDBC_DRIVER);
+            con = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+        } catch (ClassNotFoundException | SQLException ex) {
+            System.err.println(ex.getMessage());
+            
+            
+        }
     }
 
     /**
@@ -33,14 +56,14 @@ public class NewJFrame extends javax.swing.JFrame {
         tblCoursesQuery = java.beans.Beans.isDesignTime() ? null : coursesPUEntityManager.createQuery("SELECT t FROM TblCourses t");
         tblCoursesList = java.beans.Beans.isDesignTime() ? java.util.Collections.emptyList() : tblCoursesQuery.getResultList();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblcourses = new javax.swing.JTable();
+        tblCourses = new javax.swing.JTable();
         btadd = new javax.swing.JButton();
         btmodify = new javax.swing.JButton();
         btdelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblCoursesList, tblcourses);
+        org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tblCoursesList, tblCourses);
         org.jdesktop.swingbinding.JTableBinding.ColumnBinding columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${crsId}"));
         columnBinding.setColumnName("Id");
         columnBinding.setColumnClass(Integer.class);
@@ -71,7 +94,7 @@ public class NewJFrame extends javax.swing.JFrame {
         columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
-        jScrollPane1.setViewportView(tblcourses);
+        jScrollPane1.setViewportView(tblCourses);
 
         btadd.setText("ADD");
 
@@ -113,6 +136,61 @@ public class NewJFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+   private void btdeleteActionPerformed(java.awt.event.ActionEvent evt) { 
+        int selectedRow = tblCourses.getSelectedRow();
+        if (selectedRow > -1) {
+             int crsid = Integer.parseInt(tblCourses.getValueAt(selectedRow, 0).toString());
+              try {
+                Statement stmt = con.createStatement();
+                 stmt.execute("Delete From tbl_courses Where crs_Id =" + crsid);
+                   refreshTable();
+                    } catch (SQLException ex) {
+                           System.err.println(ex.getMessage());
+                    }
+              } else {
+              JOptionPane.showMessageDialog(this, "Select a record to delete",
+                    "Warning", JOptionPane.WARNING_MESSAGE);
+                 
+        }
+   }
+   
+   
+       private void btaddActionPerformed(java.awt.event.ActionEvent evt) {
+           NewJDialog newNewJDialog = new NewJDialog(this, true, con, 0);
+           new NewJDialog.setVisible(true);
+           refreshTable();
+           
+           
+       }
+       
+       private void btmodifyActionPerformed(java.awt.event.ActionEvent evt) {
+           int selectedRow =  tblCourses.getSelectedRow();
+           if (selectedRow > -1) {
+                int crsid = Integer.parseInt(tblCourses.getValueAt(selectedRow, 0).toString());
+                NewJDialog newNewJDialog = new NewJDialog(this, true, con, 0);
+           new NewJDialog.setVisible(true);
+           refreshTable();
+           } else {
+               JOptionPane.showMessageDialog(this, "Select a record to modify","Warning", JOptionPane.WARNING_MESSAGE);
+               
+           }
+       } 
+       
+       
+       private void refreshTable() {
+           coursesPUEntityManager.getTransaction().begin();
+           java.util.Collection data = tblCoursesQuery.getResultList();
+           for(Object entity :data) {
+             coursesPUEntityManager.refresh(entity);
+           }
+           tblCoursesList.clear();
+             tblCoursesList.addAll(data);
+             coursesPUEntityManager.getTransaction().commit();
+             bindingGroup.unbind();
+             bindingGroup.bind(); 
+             tblCourses.getColumnModel().getColumn(0).setMinWidth(0);
+             tblCourses.getColumnModel().getColumn(0).setMaxWidth(0);
+       }
     /**
      * @param args the command line arguments
      */
@@ -154,9 +232,9 @@ public class NewJFrame extends javax.swing.JFrame {
     private javax.swing.JButton btmodify;
     private javax.persistence.EntityManager coursesPUEntityManager;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblCourses;
     private java.util.List<newpackage.TblCourses> tblCoursesList;
     private javax.persistence.Query tblCoursesQuery;
-    private javax.swing.JTable tblcourses;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

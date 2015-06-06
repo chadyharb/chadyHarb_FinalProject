@@ -87,7 +87,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="tblcourses">
+        <Component class="javax.swing.JTable" name="tblCourses">
           <Properties>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
@@ -133,7 +133,7 @@
             </Property>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="elements" source="tblCoursesList" target="tblcourses" targetPath="elements" updateStrategy="0" immediately="true">
+            <BindingProperty name="elements" source="tblCoursesList" target="tblCourses" targetPath="elements" updateStrategy="0" immediately="true">
               <Subbinding sourcePath="${crsId}">
                 <BindingParameter name="NAME" value="Id"/>
                 <BindingParameter name="javax.swing.binding.ParameterKeys.COLUMN_CLASS" value="Integer.class"/>

@@ -5,19 +5,29 @@
  */
 
 package newpackage;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Chady
  */
+import java.sql.*;
 public class NewJDialog extends javax.swing.JDialog {
+private Connection con;
+private int crsid;
 
     /**
      * Creates new form NewJDialog
      */
-    public NewJDialog(java.awt.Frame parent, boolean modal) {
+    public NewJDialog(java.awt.Frame parent, boolean modal, Connection con, int crsid) {
         super(parent, modal);
         initComponents();
+        this.setTitle("Course");
+        this.setLocationRelativeTo(this);
+        this.con = con;
+        this.crsid = crsid;
+       
+        
     }
 
     /**
