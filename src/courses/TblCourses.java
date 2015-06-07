@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package newpackage;
+package courses;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

@@ -3,6 +3,7 @@
   <persistence-unit name="coursesPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>newpackage.TblCourses</class>
+    <class>courses.TblCourses</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/courses"/>
       <property name="javax.persistence.jdbc.password" value="mysql"/>
